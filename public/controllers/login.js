@@ -1,4 +1,4 @@
-angular.module('techNodeApp').controller('LoginCtrl', function($scope, $http, $location) {
+angular.module('techNodeApp').controller('LoginCtrl', function($scope, $http, $location,$timeout) {
   $scope.login = function () {
     $http({
       url: '/users/login',
@@ -12,6 +12,9 @@ angular.module('techNodeApp').controller('LoginCtrl', function($scope, $http, $l
       $location.path('/')
     }).error(function (data) {
       $scope.tip = data;
+      $timeout(function () {
+        $scope.tip="";
+      },3000);
     })
   }
 })

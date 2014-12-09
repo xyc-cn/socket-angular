@@ -1,8 +1,30 @@
-angular.module('techNodeApp').controller('RoomCtrl', function($scope, socket) {
+angular.module('techNodeApp').controller('RoomCtrl', function($scope, $http,socket) {
   $scope.users=[];
+  $scope.moreMessage = "";
+  $scope.messages=[];
+  $scope.$on('showLoginErr', function (evt,err) {
+    $scope.messages.push(err);
+  });
+  $scope.getMessage = function(){
+    $http({
+      url: '/messages/getMessage',
+      method: 'POST',
+      data: {
+        date: $scope.moreMessage
+      }
+    }).success(function (data) {
+      if(data[0]!=null){
+        $scope.moreMessage=data[0].createAt;
+        $scope.messages = data.concat($scope.messages);
+      }
+    });
+  };
   socket.on('messages.read', function (messages) {
+    if(messages[0]!=null){
+      $scope.moreMessage=messages[0].createAt;
+    }
     $scope.messages = messages;
-  })
+  });
   socket.on('messages.add', function (message) {
     $scope.messages.push(message)
   });
@@ -22,6 +44,6 @@ angular.module('techNodeApp').controller('RoomCtrl', function($scope, socket) {
     $scope.users = users;
   });
   socket.emit('init');
-
+  socket.emit('messages.read');
 
 });

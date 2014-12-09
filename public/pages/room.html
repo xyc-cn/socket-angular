@@ -3,9 +3,9 @@
     <div class="panel-heading room-header">TechNode</div>
     <div class="panel-body room-content">
       <div class="list-group messages" auto-scroll-to-bottom>
-
+        <a class="btn" ng-click="getMessage()">获取更多记录</a>
         <div class="list-group-item message" ng-repeat="message in messages track by $index">
-          {{message.creator.account}}: {{message.content}}
+          {{message.account}}: {{message.content}}
         </div>
       </div>
       <form class="message-creator" ng-controller="MessageCreatorCtrl">
@@ -17,6 +17,16 @@
   </div>
 </div>
 <div class="col-md-3">
+  <div class="panel panel-default user-list">
+    <div class="panel-heading user-list-header">当前用户</div>
+    <div class="panel-body user-list-content">
+      <div class="list-group users">
+        <div class="list-group-item user">
+          {{me.account||"登陆过期"}}
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="panel panel-default user-list">
     <div class="panel-heading user-list-header">在线用户</div>
     <div class="panel-body user-list-content">

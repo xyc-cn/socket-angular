@@ -10,7 +10,9 @@ var cookie = require('cookie');
 var session = require('express-session');
 var mongoose = require('mongoose');
 var users = require('./routes/users');
+var ms = require('./routes/messages');
 var UserModel = require('./Dao/user')();
+var MessageModel = require('./Dao/message')();
 var MongoStore = require('connect-mongo')(session);
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -36,11 +38,11 @@ app.use(session({
     saveUninitialized: true
 }));
 app.use('/users', users);
+app.use('/messages', ms);
 
 app.get('/',function (req, res) {
     res.sendfile('./static/index.html')
 });
-
 
 var io= require("socket.io").listen(app.listen(8000));
 io.set('authorization', function(handshakeData, accept) {
@@ -57,29 +59,26 @@ io.set('authorization', function(handshakeData, accept) {
      if (session.user) {
      accept(null, true)
      } else {
-     accept('No login')
+     accept(null,false)
          }
      }
      })
  }else {
-    accept('No session')
+    accept(null,false)
     }
  }
 
  });
-var SYSTEM = {
-    account: '机器人'
-}
+
 var messages = [];
 io.sockets.on('connection', function (socket) {
     socket.on('init', function () {
         socket.emit('init', messages);
-        console.log("init");
         if(socket.handshake.headers.sessions!=null){
             var user = socket.handshake.headers.sessions.user;
             socket.broadcast.emit('messages.add',{
                 content: user.account + '进入了聊天室',
-                creator: SYSTEM,
+                account: "系统",
                 createAt: new Date()
             });
             UserModel.modify({account:user.account},{status:1},function(err,doc){
@@ -93,12 +92,19 @@ io.sockets.on('connection', function (socket) {
         }
     });
     socket.on('messages.read', function () {
-        socket.emit('messages.read', messages);
-        console.log("read");
-    })
+        MessageModel.getMessage(new Date(),function(err,doc){
+            socket.emit('messages.read', doc);
+        });
+    });
     socket.on('messages.create', function (message) {
-        messages.push(message);
-        io.sockets.emit('messages.add', message);
+        var data ={};
+        data.content = message.content;
+        data.account = message.account;
+        MessageModel.create(data,function (err,doc) {
+            if(!err){
+                io.sockets.emit('messages.add', data);
+            }
+        });
     });
     socket.on('disconnect', function() {
         if(socket.handshake.headers.sessions!=null) {

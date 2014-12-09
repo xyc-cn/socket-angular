@@ -7,7 +7,6 @@ angular.module('techNodeApp', ['ngRoute']).
             url: '/users/validate',
             method: 'GET'
         }).success(function (user) {
-            console.log(user);
             $rootScope.me = user;
             $location.path('/')
         }).error(function (data) {
@@ -19,7 +18,6 @@ angular.module('techNodeApp', ['ngRoute']).
                 url: '/users/logout',
                 method: 'GET'
             }).success(function (user) {
-                console.log(user)
                 $rootScope.me = null;
                 $location.path('/login');
             })
@@ -27,6 +25,10 @@ angular.module('techNodeApp', ['ngRoute']).
         //接收login成功的事件
         $rootScope.$on('login', function (evt, me) {
             $rootScope.me = me;
+        });
+        //接收登陆过期的事件
+        $rootScope.$on('errLogin', function (evt, err) {
+            $rootScope.$broadcast('showLoginErr',err);
         })
     });
 
