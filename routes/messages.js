@@ -9,11 +9,12 @@ var MessageModel = require('../Dao/message')();
  */
 router.post('/getMessage', function(req, res) {
     var date = req.body.date;
+    var belong = req.body.belong;
     if(!date){
         res.end('err');
         return;
     }
-    MessageModel.getMessage(date,function(err,doc){
+    MessageModel.getMessage(date,belong,function(err,doc){
         if(doc!=null){
             res.status(200).end(JSON.stringify(doc));
         }

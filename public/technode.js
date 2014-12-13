@@ -8,7 +8,7 @@ angular.module('techNodeApp', ['ngRoute']).
             method: 'GET'
         }).success(function (user) {
             $rootScope.me = user;
-            $location.path('/')
+            $location.path('/dialog')
         }).error(function (data) {
             $location.path('/login')
         });

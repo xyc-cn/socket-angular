@@ -9,7 +9,7 @@ angular.module('techNodeApp').controller('LoginCtrl', function($scope, $http, $l
       }
     }).success(function (user) {
       $scope.$emit('login', user)
-      $location.path('/')
+      $location.path('/dialog')
     }).error(function (data) {
       $scope.tip = data;
       $timeout(function () {

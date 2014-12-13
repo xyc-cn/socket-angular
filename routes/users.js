@@ -5,9 +5,9 @@ var UserModel = require('../Dao/user')();
  * 注册账号
  * 参数account和password
  */
-router.get('/register', function(req, res) {
-  var account = req.query.account;
-  var password = req.query.password;
+router.post('/register', function(req, res) {
+  var account = req.body.account;
+  var password = req.body.password;
   UserModel.register(account,password,function(err){
     if(!err){
       res.end(JSON.stringify({status:"success"}));
@@ -60,6 +60,7 @@ router.post('/login', function(req, res) {
     }
     else{
         if(doc){
+          doc.password = undefined;
           req.session.user = doc;
           res.end(JSON.stringify(doc));
         }

@@ -69,18 +69,14 @@ io.set('authorization', function(handshakeData, accept) {
  }
 
  });
-
+var loginUser = new Object();
 var messages = [];
 io.sockets.on('connection', function (socket) {
     socket.on('init', function () {
         socket.emit('init', messages);
         if(socket.handshake.headers.sessions!=null){
             var user = socket.handshake.headers.sessions.user;
-            socket.broadcast.emit('messages.add',{
-                content: user.account + '进入了聊天室',
-                account: "系统",
-                createAt: new Date()
-            });
+            loginUser[user._id] = socket;
             UserModel.modify({account:user.account},{status:1},function(err,doc){
                 UserModel.User.find({status:1},{account:1}, function (err,doc) {
                     if(doc){
@@ -91,8 +87,8 @@ io.sockets.on('connection', function (socket) {
 
         }
     });
-    socket.on('messages.read', function () {
-        MessageModel.getMessage(new Date(),function(err,doc){
+    socket.on('messages.read', function (belong) {
+        MessageModel.getMessage(new Date(),belong,function(err,doc){
             socket.emit('messages.read', doc);
         });
     });
@@ -100,15 +96,22 @@ io.sockets.on('connection', function (socket) {
         var data ={};
         data.content = message.content;
         data.account = message.account;
+        data.belong = message.belong;
+        var to= message.to;
+
         MessageModel.create(data,function (err,doc) {
             if(!err){
-                io.sockets.emit('messages.add', data);
+                socket.emit('messages.add',doc,to,message.from);
+                if(loginUser[to]!=null){
+                    loginUser[to].emit('messages.add', doc,to,message.from);
+                }
             }
         });
     });
     socket.on('disconnect', function() {
         if(socket.handshake.headers.sessions!=null) {
             var user = socket.handshake.headers.sessions.user;
+            loginUser[user.id]=null;
             UserModel.modify({account: user.account}, {status: 0}, function (err, doc) {
                 if (doc != null) {
                     console.log(doc.account + " has disconnect");

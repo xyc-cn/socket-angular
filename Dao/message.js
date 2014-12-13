@@ -8,6 +8,7 @@ module.exports  = function(){
     var MessageSchema = new Schema({
         content: { type: String},
         account: { type: String},
+        belong:{type:String},
         createAt:{type: Date, default: Date.now}
     });
     var Message = mongoose.model('Message', MessageSchema);
@@ -15,12 +16,13 @@ module.exports  = function(){
     var create = function(data,callback){
         var message = new Message({
             content:data.content,
-            account:data.account
+            account:data.account,
+            belong:data.belong
         });
         message.save(callback);
     };
-    var getMessage = function(date,callback){
-        Message.find({createAt:{$lt:date}},null,{sort:[['createAt', -1]],limit:10},function(err,doc){
+    var getMessage = function(date,belong,callback){
+        Message.find({createAt:{$lt:date},belong:belong},null,{sort:[['createAt', -1]],limit:10},function(err,doc){
             if(doc){
                 var sort_doc = _.sortBy(doc, function(item){ return item.createAt; });
                 callback(err,sort_doc);

@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <title>TechNode</title>
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/bower_components/angular/angular-csp.css"/>
   <link rel="stylesheet" href="/styles/room.css">
+  <link rel="stylesheet" href="/styles/dialog.css">
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
   <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -15,7 +17,7 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">TechNode</a>
+      <a class="navbar-brand" href="#">聊天程序</a>
     </div>
     <nav class="collapse navbar-collapse" role="navigation">
       <ul class="nav navbar-nav navbar-right" ng-show="me">
@@ -35,7 +37,9 @@
 <script type="text/javascript" src="/directives/auto-scroll-to-bottom.js"></script>
 <script type="text/javascript" src="/directives/ctrl-enter-break-line.js"></script>
 <script type="text/javascript" src="/controllers/room.js"></script>
+<script type="text/javascript" src="/controllers/dialog.js"></script>
 <script type="text/javascript" src="/controllers/login.js"></script>
+<script type="text/javascript" src="/controllers/register.js"></script>
 <script type="text/javascript" src="/controllers/message-creator.js"></script>
 </body>
 </html>

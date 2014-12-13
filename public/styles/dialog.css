@@ -1,0 +1,19 @@
+.user_name{
+    cursor: pointer;
+}
+.message_date{
+    position: absolute;
+    right: 10px;
+}
+.new_info{
+    margin-top: 2px;
+    text-align: center;
+    color: white;
+    line-height: 1em;
+    float: right;
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    background-color: red;
+    border-radius: 0.5em;
+}
